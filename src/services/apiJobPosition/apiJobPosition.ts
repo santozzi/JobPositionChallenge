@@ -1,4 +1,5 @@
 import { configAPI } from "../../config/ConfigApi";
+import { EmptyOpenPositionListException } from "./errors/emptyOpenPositionListException";
 import { NotFoundCandidateException } from "./errors/notFoundCandidateException";
 
 const BASE_URL = configAPI().BASE_URL;
@@ -10,12 +11,16 @@ export type Candidato = {
   lastName: string;
   email: string;
 };
+export type Postulacion = {
+  id: number, 
+  title: string
+}
 
 export async function obtenerDatosDeCandidato(email: string):Promise<Candidato> {
   if (!email) {
     throw new Error("Falta el email del candidato");
   }
-  //TODO: usar expresion regular para chequear el formato del email
+  //TODO: usar expresion regular para chequear el formato del email o joi
  
   const data = await fetch(
     `${BASE_URL}/api/candidate/get-by-email?email=${email}`,
@@ -27,6 +32,22 @@ export async function obtenerDatosDeCandidato(email: string):Promise<Candidato> 
       throw new NotFoundCandidateException("No se encontró un candidato con ese email")
   }
   return datosDelCandidato as Candidato;
+
+
+}
+export async function obtenerPostulacionesDisponibles():Promise<Postulacion[]> {
+
+
+  const data = await fetch(
+    `${BASE_URL}/api/jobs/get-list`,
+  );
+  const datosDePostulaciones= await data.json();
+   
+  if(datosDePostulaciones.length == 0){
+      //Esto lo hago para desacoplar los errores de la api con los que recibe la aplicacion, mañana cambio de api lo cambio de aca y la app ni enterada.
+      throw new EmptyOpenPositionListException("No se encontraron posiciones abiertas")
+  }
+  return datosDePostulaciones as Postulacion[];
 
 
 }
