@@ -27,7 +27,7 @@ const PostulationViewer: React.FC<PropPostulacionViewer>  = (props) => {
 		<div className='postulationCard'>
  			<ul>
 				<li>{postulation.title}</li>
-				<li><input type='email' value={email} onChange={emailHandler}/></li>
+				<li><input type='email' value={email} onChange={emailHandler} placeholder='Ingrese su email'/></li>
 				<li><button onClick={buttonHandler} >Submit</button></li>
 			</ul>
  		</div>
