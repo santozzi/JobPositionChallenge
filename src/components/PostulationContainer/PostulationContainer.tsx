@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
+  enviarPostulacion,
   obtenerDatosDeCandidato,
   obtenerPostulacionesDisponibles,
   type Postulacion,
@@ -15,26 +16,29 @@ export type Apply = {
   uuid: string;
   jobId: number;
   candidateId: string;
+  applicationId:string;
   repoUrl: string;
 };
 const PostulationContainer: React.FC = () => {
   const [postulado, setPostulado] = useState<boolean>(false);
-  const [apply, setApply] = useState<Apply>();
+  const [applyEnviada, setApplyEnviada] = useState<boolean>(false);
 
   const [postulaciones, setPostulaciones] = useState<Postulacion[]>([]);
 
   const handlerCandidato = (email: string, jobId: number) => {
     obtenerDatosDeCandidato(email)
       .then((candidato) => {
-        // setCandidato(candidato);
         const paraAplicar: Apply = {
           uuid: candidato.uuid,
           candidateId: candidato.candidateId,
+          applicationId:candidato.applicationId ,
           jobId,
           repoUrl: configAPI().REPOSITORY,
         };
 
-        setApply(paraAplicar);
+        enviarPostulacion(paraAplicar).then((respuesta) => {
+          setApplyEnviada(respuesta);
+        });
 
         setPostulado(true);
       })
@@ -60,15 +64,17 @@ const PostulationContainer: React.FC = () => {
   }, [postulado]);
   return (
     <div className="postulation-container-box">
-      {!postulado
-        ? postulaciones.map((postulacion) => (
-            <PostulationViewer
-              key={`postulation${postulacion.id}`}
-              handler={handlerCandidato}
-              postulation={postulacion}
-            />
-          ))
-        : apply && <Applied applyData={apply} />}
+      {!postulado ? (
+        postulaciones.map((postulacion) => (
+          <PostulationViewer
+            key={`postulation${postulacion.id}`}
+            handler={handlerCandidato}
+            postulation={postulacion}
+          />
+        ))
+      ) : (
+        <Applied applyData={applyEnviada} />
+      )}
     </div>
   );
 };

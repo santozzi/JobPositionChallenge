@@ -1,3 +1,4 @@
+import type { Apply } from "../../components/PostulationContainer/PostulationContainer";
 import { configAPI } from "../../config/ConfigApi";
 import { EmptyOpenPositionListException } from "./errors/emptyOpenPositionListException";
 import { NotFoundCandidateException } from "./errors/notFoundCandidateException";
@@ -50,4 +51,27 @@ export async function obtenerPostulacionesDisponibles():Promise<Postulacion[]> {
   return datosDePostulaciones as Postulacion[];
 
 
+}
+
+export async function enviarPostulacion(apply:Apply):Promise<boolean>{
+  const data = await fetch(`${BASE_URL}/api/candidate/apply-to-job`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({...apply}),
+  });
+
+  console.log("en enviar", JSON.stringify({...apply}));
+  const error = await data.json();
+
+  if (!data.ok) {
+    
+    console.log(error);
+    
+   return false;
+  }
+
+    console.log(error);
+  return true;
 }
