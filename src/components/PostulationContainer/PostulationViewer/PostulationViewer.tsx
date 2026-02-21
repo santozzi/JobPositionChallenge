@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import type { Postulacion } from '../../../services/apiJobPosition/apiJobPosition';
 import { esEmailValido } from '../../../utils/esEmailValido';
+import "./css/styles.css";
 type PropPostulacionViewer ={
 	handler:(email:string,jobId:number)=>void,
 	postulation:Postulacion
@@ -23,7 +24,7 @@ const PostulationViewer: React.FC<PropPostulacionViewer>  = (props) => {
 	  }
 	}
 	return (
-		<div>
+		<div className='postulationCard'>
  			<ul>
 				<li>{postulation.title}</li>
 				<li><input type='email' value={email} onChange={emailHandler}/></li>

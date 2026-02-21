@@ -10,6 +10,7 @@ import { NotFoundCandidateException } from "../../services/apiJobPosition/errors
 import { PostulationViewer } from "./PostulationViewer";
 import { Applied } from "./Applied";
 import { configAPI } from "../../config/ConfigApi";
+import "./css/styles.css";
 export type Apply = {
   uuid: string;
   jobId: number;
@@ -58,7 +59,7 @@ const PostulationContainer: React.FC = () => {
     }
   }, [postulado]);
   return (
-    <div>
+    <div className="postulation-container-box">
       {!postulado
         ? postulaciones.map((postulacion) => (
             <PostulationViewer

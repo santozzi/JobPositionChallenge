@@ -1,6 +1,7 @@
 
 import React from 'react';
 import type { Apply } from '../PostulationContainer';
+import "./css/styles.css";
 
 type PropsApplied ={
   applyData: Apply,
@@ -11,7 +12,8 @@ type PropsApplied ={
 const Applied: React.FC<PropsApplied> = ({applyData}) => {
 	const {candidateId,jobId,repoUrl,uuid} = applyData;
 	return (
-		<div>
+
+		<div className='cardApply'>
  			{
 				<ul>
 					<li>{`candidateId: ${candidateId}`}</li>
@@ -21,6 +23,8 @@ const Applied: React.FC<PropsApplied> = ({applyData}) => {
 				</ul>
 			}
  		</div>
+	
+		
 	);
 };
 
