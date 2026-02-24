@@ -40,15 +40,12 @@
     border-radius: 50px;
 }
 .postulationCard ul li button:hover{
-   
     background-color: #EFC230 ;
-      cursor: pointer;
-
+    cursor: pointer;
 }
 .label-error{
     color:red;
     margin: 0;
     font-size: 10px;
     font-weight: 300;
-
 }

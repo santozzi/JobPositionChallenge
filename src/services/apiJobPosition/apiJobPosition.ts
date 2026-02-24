@@ -46,7 +46,7 @@ export async function obtenerDatosDeCandidato(
   }
   const datosDelCandidato = await data.json();
 
-  return datosDelCandidato as Candidato;
+  return datosDelCandidato;
 }
 
 export async function obtenerPostulacionesDisponibles(): Promise<
@@ -54,7 +54,12 @@ export async function obtenerPostulacionesDisponibles(): Promise<
 > {
   const data = await fetch(`${BASE_URL}/api/jobs/get-list`);
   if (!data.ok) {
-    throw new Error("error inesperado");
+    if(data.status === 404){
+      throw new Error ("Error con el servidor, intente más tarde")
+    }else {
+      throw new Error("Error inesperado");
+    }
+    
   }
 
   const datosDePostulaciones = await data.json();
@@ -64,7 +69,7 @@ export async function obtenerPostulacionesDisponibles(): Promise<
       "No se encontraron posiciones abiertas",
     );
   }
-  return datosDePostulaciones as Postulacion[];
+  return datosDePostulaciones;
 }
 
 export async function enviarPostulacion(apply: Apply): Promise<boolean> {
@@ -84,8 +89,5 @@ export async function enviarPostulacion(apply: Apply): Promise<boolean> {
       throw new Error("Error inesperado");
     }
   }
-  
-  
-
   return true;
 }

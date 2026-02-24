@@ -6,9 +6,7 @@ import {
   obtenerPostulacionesDisponibles,
   type Postulacion,
 } from "../../../services/apiJobPosition/apiJobPosition";
-
 import { PostulationViewer } from "./../PostulationViewer";
-import { Applied } from "./../Applied";
 import { configAPI } from "../../../config/ConfigApi";
 import "./css/styles.css";
 import Swal from "sweetalert2";
@@ -24,10 +22,7 @@ export type Apply = {
 
 const PostulationContainer: React.FC = () => {
   const [postulado] = useState<boolean>(false);
-  const [applyEnviada] = useState<boolean>(false);
-
   const [postulaciones, setPostulaciones] = useState<Postulacion[]>([]);
-
   const handlerCandidato = async (email: string, jobId: number) => {
     try {
       const candidato = await obtenerDatosDeCandidato(email);
@@ -39,7 +34,8 @@ const PostulationContainer: React.FC = () => {
         repoUrl: configAPI().REPOSITORY,
       };
        await enviarPostulacion(paraAplicar);
-       Swal.fire("Envio exitoso")
+       Swal.fire("Envio exitoso");
+      
     } catch (error) {
       if (error instanceof NotFoundCandidateException) Swal.fire(error.message);
     }
@@ -49,12 +45,12 @@ const PostulationContainer: React.FC = () => {
     if (!postulado) {
       obtenerPostulacionesDisponibles().then((postulaciones) => {
         setPostulaciones(postulaciones);
-      });
+      }).catch((error)=>Swal.fire(error.message));
     }
   }, [postulado]);
   return (
     <div className="postulation-container-box">
-      {!postulado ? (
+      {
         postulaciones.map((postulacion) => (
           <PostulationViewer
             key={`postulation${postulacion.id}`}
@@ -62,9 +58,7 @@ const PostulationContainer: React.FC = () => {
             postulation={postulacion}
           />
         ))
-      ) : (
-        <Applied applyData={applyEnviada} />
-      )}
+       }
     </div>
   );
 };
