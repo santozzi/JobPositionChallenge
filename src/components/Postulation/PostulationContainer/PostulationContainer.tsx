@@ -40,7 +40,7 @@ const PostulationContainer: React.FC = () => {
        await enviarPostulacion(paraAplicar);
        Swal.fire("Envio exitoso")
     } catch (error) {
-      if (error instanceof Error) console.log(error.message);
+      if (error instanceof Error) Swal.fire(error.message);
     }
   };
 

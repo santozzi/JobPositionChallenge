@@ -23,7 +23,12 @@ export async function obtenerDatosDeCandidato(email: string):Promise<Candidato> 
   if (!email) {
     throw new Error("Falta el email del candidato");
   }
+
+  //TODO: No pasa por aca, analizar
+  
   if(!esEmailValido(email)){
+
+    
     throw new Error("Formato de email incorrecto");
   }
 
@@ -31,15 +36,15 @@ export async function obtenerDatosDeCandidato(email: string):Promise<Candidato> 
   const data = await fetch(
     `${BASE_URL}/api/candidate/get-by-email?email=${email}`,
   );
+  if(data.status === 404){
+    throw new NotFoundCandidateException("No se encontró un candidato con ese email")
+  }
   if(!data.ok){
      throw new Error("Error inesperado");
   }
   const datosDelCandidato = await data.json();
    
-  if(datosDelCandidato.error == "No candidate found with that email"){
-      
-      throw new NotFoundCandidateException("No se encontró un candidato con ese email")
-  }
+ 
   return datosDelCandidato as Candidato;
 
 
