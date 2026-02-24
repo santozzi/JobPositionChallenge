@@ -1,5 +1,6 @@
-import type { Apply } from "../../components/PostulationContainer/PostulationContainer";
+import type { Apply } from "../../components/Postulation/PostulationContainer/PostulationContainer";
 import { configAPI } from "../../config/ConfigApi";
+import { esEmailValido } from "../../utils/esEmailValido";
 import { EmptyOpenPositionListException } from "./errors/emptyOpenPositionListException";
 import { NotFoundCandidateException } from "./errors/notFoundCandidateException";
 
@@ -18,18 +19,25 @@ export type Postulacion = {
 }
 
 export async function obtenerDatosDeCandidato(email: string):Promise<Candidato> {
+
   if (!email) {
     throw new Error("Falta el email del candidato");
   }
-  //TODO: usar expresion regular para chequear el formato del email o joi
+  if(!esEmailValido(email)){
+    throw new Error("Formato de email incorrecto");
+  }
+
  
   const data = await fetch(
     `${BASE_URL}/api/candidate/get-by-email?email=${email}`,
   );
+  if(!data.ok){
+     throw new Error("Error inesperado");
+  }
   const datosDelCandidato = await data.json();
    
   if(datosDelCandidato.error == "No candidate found with that email"){
-      //Esto lo hago para desacoplar los errores de la api con los que recibe la aplicacion, mañana cambio de api lo cambio de aca y la app ni enterada.
+      
       throw new NotFoundCandidateException("No se encontró un candidato con ese email")
   }
   return datosDelCandidato as Candidato;

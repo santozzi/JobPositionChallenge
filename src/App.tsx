@@ -1,7 +1,7 @@
 
 import './App.css'
 
-import { PostulationContainer } from './components/PostulationContainer';
+import { PostulationContainer } from './components/Postulation/PostulationContainer';
 
 function App() {
 

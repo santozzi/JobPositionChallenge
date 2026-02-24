@@ -1,0 +1,71 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import {
+  enviarPostulacion,
+  obtenerDatosDeCandidato,
+  obtenerPostulacionesDisponibles,
+  type Postulacion,
+} from "../../../services/apiJobPosition/apiJobPosition";
+
+import { PostulationViewer } from "./../PostulationViewer";
+import { Applied } from "./../Applied";
+import { configAPI } from "../../../config/ConfigApi";
+import "./css/styles.css";
+import Swal from "sweetalert2";
+
+export type Apply = {
+  uuid: string;
+  jobId: number;
+  candidateId: string;
+  applicationId: string;
+  repoUrl: string;
+};
+
+const PostulationContainer: React.FC = () => {
+  const [postulado] = useState<boolean>(false);
+  const [applyEnviada] = useState<boolean>(false);
+
+  const [postulaciones, setPostulaciones] = useState<Postulacion[]>([]);
+
+  const handlerCandidato = async (email: string, jobId: number) => {
+    try {
+      const candidato = await obtenerDatosDeCandidato(email);
+      const paraAplicar: Apply = {
+        uuid: candidato.uuid,
+        candidateId: candidato.candidateId,
+        applicationId: candidato.applicationId,
+        jobId,
+        repoUrl: configAPI().REPOSITORY,
+      };
+       await enviarPostulacion(paraAplicar);
+       Swal.fire("Envio exitoso")
+    } catch (error) {
+      if (error instanceof Error) console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!postulado) {
+      obtenerPostulacionesDisponibles().then((postulaciones) => {
+        setPostulaciones(postulaciones);
+      });
+    }
+  }, [postulado]);
+  return (
+    <div className="postulation-container-box">
+      {!postulado ? (
+        postulaciones.map((postulacion) => (
+          <PostulationViewer
+            key={`postulation${postulacion.id}`}
+            handler={handlerCandidato}
+            postulation={postulacion}
+          />
+        ))
+      ) : (
+        <Applied applyData={applyEnviada} />
+      )}
+    </div>
+  );
+};
+
+export default PostulationContainer;
