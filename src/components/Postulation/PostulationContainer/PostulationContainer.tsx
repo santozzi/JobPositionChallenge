@@ -12,6 +12,7 @@ import { Applied } from "./../Applied";
 import { configAPI } from "../../../config/ConfigApi";
 import "./css/styles.css";
 import Swal from "sweetalert2";
+import { NotFoundCandidateException } from "../../../services/apiJobPosition/errors/notFoundCandidateException";
 
 export type Apply = {
   uuid: string;
@@ -40,7 +41,7 @@ const PostulationContainer: React.FC = () => {
        await enviarPostulacion(paraAplicar);
        Swal.fire("Envio exitoso")
     } catch (error) {
-      if (error instanceof Error) Swal.fire(error.message);
+      if (error instanceof NotFoundCandidateException) Swal.fire(error.message);
     }
   };
 

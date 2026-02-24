@@ -21,6 +21,7 @@ export type Postulacion = {
 export async function obtenerDatosDeCandidato(
   email: string,
 ): Promise<Candidato> {
+  //no llego a estas porque valido el email en PostulationViewer lo hice así para desacoplar el código
   if (!email) {
     throw new Error("Falta el email del candidato");
   }
@@ -28,8 +29,9 @@ export async function obtenerDatosDeCandidato(
   if (!esEmailValido(email)) {
     throw new Error("Formato de email incorrecto");
   }
+ //-------------------------------------------------->
 
-  const data = await fetch(
+ const data = await fetch(
     `${BASE_URL}/api/candidate/get-by-email?email=${email}`,
   );
 
@@ -74,8 +76,6 @@ export async function enviarPostulacion(apply: Apply): Promise<boolean> {
     body: JSON.stringify({...apply}),
   });
   
- 
-
 
   if (!data.ok) {
     if(data.status === 400){
